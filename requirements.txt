@@ -1,0 +1,27 @@
+# Requirements for running A01_test_VLM.py and B01_VLM_CAM.py
+# Install PyTorch appropriate for your CUDA/CPU config. See https://pytorch.org/get-started/locally/
+# Example for CUDA 11.8:
+#   pip install torch==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cu118
+
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+transformers>=4.31.0
+accelerate>=0.19.0
+huggingface-hub>=0.14.1
+safetensors>=0.4.0
+
+# Image / vision
+Pillow>=9.0.0
+opencv-python>=4.7.0
+
+# Tokenizers / text
+sentencepiece>=0.1.98
+tokenizers>=0.13.2
+
+# Optional: for 8-bit model loading / quantization (only if you need it)
+# bitsandbytes>=0.39.0
+# peft>=0.4.0
+
+# Optional: GPU-specific versions of PyTorch can be installed instead of the above torch/torchvision lines
+# If you run into installation issues, follow the official PyTorch installation guide.
