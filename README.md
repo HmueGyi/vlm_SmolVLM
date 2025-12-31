@@ -1,36 +1,38 @@
 # vlm_SmolVLM
 
-A tiny Visual-Language Model (VLM) demo repository with two example scripts:
+A minimal Visual-Language Model (VLM) demo. This repository contains two example scripts:
 
-- `A01_test_VLM.py` — run model inference on a single image (`photo1.jpg` by default).
-- `B01_VLM_CAM.py` — run a webcam demo that captures frames and runs the VLM in real time.
+- `A01_test_VLM.py` — single-image VLM inference (example uses `photo1.jpg`).
+- `B01_VLM_CAM.py` — interactive webcam demo: captures frames and lets you type questions in the terminal to describe the current frame.
 
-Prerequisites
+Files and purpose
 
-- Python 3.8 or newer
-- A suitable PyTorch wheel for your platform (CUDA-enabled if you have an NVIDIA GPU, or CPU-only)
+- `A01_test_VLM.py`
+  - Loads an image, resizes it to reduce memory use, and runs the SmolVLM `image-text-to-text` pipeline.
+  - Note: the script contains an absolute image path. Either update `img_path` to point to `./photo1.jpg` in this repo or edit it to your image location.
+  - Example output: printed pipeline result (JSON-like list).
 
-Installation
+- `B01_VLM_CAM.py`
+  - Opens the default webcam, shows a live window, and runs a background thread to capture frames.
+  - In the terminal you can type a question (for example: "What is in the image?") and the script will send the latest frame + text prompt to the VLM and print the response.
+  - Press `q` in the webcam window to stop the camera, or type `quit` / `q` / `exit` in the terminal to exit.
 
-1. Create and activate a virtual environment (recommended):
+Quickstart
 
-   python -m venv .venv && source .venv/bin/activate
+1. Create and activate a Python virtual environment (recommended):
 
-2. Install the dependencies listed in `requirements.txt`.
+   python -m venv .venv
+   source .venv/bin/activate
+
+2. Install dependencies:
 
    pip install -r requirements.txt
 
-Note about PyTorch
+3. (Optional) Install a PyTorch wheel matching your CUDA/CPU setup if needed.
 
-PyTorch should be installed according to your CUDA/CPU setup. For example, for CUDA 11.8:
+Running the examples
 
-   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-
-If you don't have a GPU, install the CPU-only build (follow instructions on https://pytorch.org).
-
-Usage
-
-- Run inference on the example image:
+- Run the single-image script (make sure `img_path` points to an existing image):
 
   python A01_test_VLM.py
 
@@ -38,18 +40,33 @@ Usage
 
   python B01_VLM_CAM.py
 
-Files
+Headless / terminal-only usage
 
-- `A01_test_VLM.py` — single-image VLM inference example.
-- `B01_VLM_CAM.py` — webcam capture + VLM inference example.
-- `photo1.jpg` — example image used by `A01_test_VLM.py`.
-- `requirements.txt` — Python dependencies for the project.
+- A01: run and save output to a file without opening any GUI windows:
 
-Notes
+  python A01_test_VLM.py > results.txt
 
-- Some advanced features (8-bit quantization) are optional and require additional packages (see `requirements.txt` comments).
-- This project is intended as a small demo and starting point — adjust model paths and device selection in the scripts as needed.
+  If the script tries to open windows, remove or comment out `cv2.imshow` / `cv2.waitKey` in the script.
+
+- B01 on a headless server:
+  - Use a virtual X server: `xvfb-run -s "-screen 0 1400x900x24" python B01_VLM_CAM.py`.
+  - Or modify `B01_VLM_CAM.py` to skip `cv2.imshow` and instead save frames or only print model outputs.
+
+Device selection and memory tips
+
+- Scripts attempt to use CUDA if available (via `device_map="auto"`) and fall back to CPU.
+- To force CPU, set the environment variable before running:
+
+  export CUDA_VISIBLE_DEVICES=""
+
+- Reduce memory usage: scripts set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` and use `torch_dtype=torch.float16`. Further reduce size by resizing images and lowering `max_new_tokens`.
+
+Troubleshooting
+
+- If `A01_test_VLM.py` fails to find the image, update `img_path` to the correct path or place `photo1.jpg` next to the script and set `img_path = "./photo1.jpg"`.
+- If the webcam is not seen, try a different device index in `cv2.VideoCapture(0)` (e.g. `1`) or verify permissions.
+- For CUDA / PyTorch errors, install the correct PyTorch build for your CUDA version from https://pytorch.org.
 
 License
 
-- MIT (adjust as needed).
+MIT (change as needed).
