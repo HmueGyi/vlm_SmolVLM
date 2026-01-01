@@ -25,3 +25,4 @@ tokenizers>=0.13.2
 
 # Optional: GPU-specific versions of PyTorch can be installed instead of the above torch/torchvision lines
 # If you run into installation issues, follow the official PyTorch installation guide.
+onnxruntime
