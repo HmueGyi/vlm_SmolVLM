@@ -31,12 +31,12 @@ def capture_frames():
         ret, frame = cap.read()
         if not ret:
             break
-        frame = cv2.flip(frame, flipCode=1)  # Mirror image
+        frame = cv2.flip(frame, 1)
         with frame_lock:
             current_frame = frame.copy()
         cv2.imshow("Webcam", frame)
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
+        cv2.waitKey(1)   
+
 
 # Start the webcam thread
 threading.Thread(target=capture_frames, daemon=True).start()

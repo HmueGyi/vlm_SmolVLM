@@ -7,7 +7,7 @@ import os
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 # Load and resize image to reduce GPU memory usage
-img_path = "/home/mr_robot/Desktop/To_Learn/road_to_tune/vlm_prompt_tuning/photo1.jpg"
+img_path = "/home/hmuegyi/Desktop/git_project/vlm_SmolVLM/photo1.jpg"
 img = Image.open(img_path).convert("RGB")
 img = img.resize((224, 224))  # smaller image
 
