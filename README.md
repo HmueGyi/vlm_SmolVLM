@@ -1,72 +1,74 @@
-# vlm_SmolVLM
+# SmolVLM Demo Project
 
-A minimal Visual-Language Model (VLM) demo. This repository contains two example scripts:
+Small demos for running SmolVLM variants and integrations. This README gives a short, easy-to-scan overview and quickstart steps.
 
-- `A01_test_VLM.py` — single-image VLM inference (example uses `photo1.jpg`).
-- `B01_VLM_CAM.py` — interactive webcam demo: captures frames and lets you type questions in the terminal to describe the current frame.
+Quick links
+- Examples: A01/B01/C01/D01/D02
+- Myanmar translation: [README_myanmar.md](README_myanmar.md)
 
-Files and purpose
+Prerequisites
+- Python 3.10+ (use a venv)
+- Install a matching torch wheel for your machine (see requirements.txt comments)
 
-- `A01_test_VLM.py`
-  - Loads an image, resizes it to reduce memory use, and runs the SmolVLM `image-text-to-text` pipeline.
-  - Note: the script contains an absolute image path. Either update `img_path` to point to `./photo1.jpg` in this repo or edit it to your image location.
-  - Example output: printed pipeline result (JSON-like list).
+Quickstart (Linux)
+1. Create and activate a venv
+   python3 -m venv venv
+   source venv/bin/activate
 
-- `B01_VLM_CAM.py`
-  - Opens the default webcam, shows a live window, and runs a background thread to capture frames.
-  - In the terminal you can type a question (for example: "What is in the image?") and the script will send the latest frame + text prompt to the VLM and print the response.
-  - Press `q` in the webcam window to stop the camera, or type `quit` / `q` / `exit` in the terminal to exit.
+2. Install dependencies
+   - First install the appropriate torch/torchvision wheel for your CUDA (or CPU) build (see comments at top of requirements.txt)
+   - Then:
+     pip install --upgrade pip
+     pip install -r requirements.txt
 
-Quickstart
+3. (Optional) If you need ONNX runtime for CPU inference:
+   pip install onnxruntime
 
-1. Create and activate a Python virtual environment (recommended):
+Important files / folders
+- requirements.txt — dependency notes and packages
 
-   python -m venv .venv
-   source .venv/bin/activate
+Scripts (short descriptions)
+- A01_test_VLM.py
+  Purpose: Run a single-image pipeline and print a text description.
+  Usage: adjust img_path then run `python A01_test_VLM.py`.
 
-2. Install dependencies:
+- B01_VLM_CAM.py
+  Purpose: Display webcam frames and run SmolVLM on the latest frame when you type a question at the terminal prompt.
+  Usage: `python B01_VLM_CAM.py` → type your question at the prompt and press Enter. Type 'q' or 'quit' to exit.
+  Notes: The webcam window is for display only; inference is triggered from the terminal prompt.
 
-   pip install -r requirements.txt
+- C01_ONNX_VLM.py
+  Purpose: Run exported ONNX vision/embed/decoder sessions via onnxruntime (CPU). Script is under active development.
+  Usage: `python C01_ONNX_VLM.py` and follow prompts.
 
-3. (Optional) Install a PyTorch wheel matching your CUDA/CPU setup if needed.
+- D01_Llamacpp_v1.py
+  Purpose: Capture one webcam frame and send it with a text instruction to a local llama.cpp HTTP server (`/v1/chat/completions`).
+  Usage: Start the llama.cpp server, then run `python D01_Llamacpp_v1.py`.
 
-Running the examples
+- D02_Llamacpp_v2.py
+  Purpose: Continuously capture frames and periodically send them to a llama.cpp server; shows the latest response on the webcam window.
+  Usage: Start the server, then run `python D02_Llamacpp_v2.py`.
 
-- Run the single-image script (make sure `img_path` points to an existing image):
+llama.cpp HTTP server (brief)
+- The D01/D02 clients expect a llama.cpp-compatible HTTP server supporting `/v1/chat/completions` (release b5394 tested).
+- Start the server and set BASE_URL in the Python scripts (default: http://localhost:8080).
+- Example start command (server-side):
+1. Install [llama.cpp](https://github.com/ggml-org/llama.cpp)
+2. Run `llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF`  
+   Note: you may need to add `-ngl 99` to enable GPU (if you are using NVidia/AMD/Intel GPU)  
+   Note (2): You can also try other models [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md)
 
-  python A01_test_VLM.py
 
-- Run the webcam demo (requires a working webcam and OpenCV):
+Run examples (commands)
+- python A01_test_VLM.py
+- python B01_VLM_CAM.py
+- python C01_ONNX_VLM.py
+- Start server -> python D01_Llamacpp_v1.py
+- Start server -> python D02_Llamacpp_v2.py
 
-  python B01_VLM_CAM.py
-
-Headless / terminal-only usage
-
-- A01: run and save output to a file without opening any GUI windows:
-
-  python A01_test_VLM.py > results.txt
-
-  If the script tries to open windows, remove or comment out `cv2.imshow` / `cv2.waitKey` in the script.
-
-- B01 on a headless server:
-  - Use a virtual X server: `xvfb-run -s "-screen 0 1400x900x24" python B01_VLM_CAM.py`.
-  - Or modify `B01_VLM_CAM.py` to skip `cv2.imshow` and instead save frames or only print model outputs.
-
-Device selection and memory tips
-
-- Scripts attempt to use CUDA if available (via `device_map="auto"`) and fall back to CPU.
-- To force CPU, set the environment variable before running:
-
-  export CUDA_VISIBLE_DEVICES=""
-
-- Reduce memory usage: scripts set `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` and use `torch_dtype=torch.float16`. Further reduce size by resizing images and lowering `max_new_tokens`.
-
-Troubleshooting
-
-- If `A01_test_VLM.py` fails to find the image, update `img_path` to the correct path or place `photo1.jpg` next to the script and set `img_path = "./photo1.jpg"`.
-- If the webcam is not seen, try a different device index in `cv2.VideoCapture(0)` (e.g. `1`) or verify permissions.
-- For CUDA / PyTorch errors, install the correct PyTorch build for your CUDA version from https://pytorch.org.
-
-License
-
-MIT (change as needed).
+Troubleshooting (common checks)
+- Camera: ensure OpenCV can access /dev/video0 and you have permissions.
+- Model download/auth: if model downloads fail, run `huggingface-cli login` or use local paths.
+- Memory/OOM: reduce image sizes or use CPU/FP16 where appropriate.
+- ONNX shape errors: check printed decoder input names in C01_ONNX_VLM.py and adapt feed keys.
+- Server connection: verify `curl http://localhost:8080/health` and adjust BASE_URL.

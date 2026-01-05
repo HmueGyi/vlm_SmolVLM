@@ -1,9 +1,12 @@
-# Requirements for running A01_test_VLM.py and B01_VLM_CAM.py
-# Install PyTorch appropriate for your CUDA/CPU config. See https://pytorch.org/get-started/locally/
-# Example for CUDA 11.8:
-#   pip install torch==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cu118
+# Requirements for SmolVLM demos
+# Recommended Python: 3.10+
 
-# Core dependencies
+# NOTE: Install torch/torchvision separately to match your CUDA (or CPU) setup.
+# Example (CUDA-enabled PyTorch) -- install the correct wheel from pytorch.org:
+#   pip install torch==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cu118
+# Or install CPU-only PyTorch via the official PyTorch instructions.
+
+# Core libraries
 torch>=2.0.0
 torchvision>=0.15.0
 transformers>=4.31.0
@@ -19,10 +22,14 @@ opencv-python>=4.7.0
 sentencepiece>=0.1.98
 tokenizers>=0.13.2
 
-# Optional: for 8-bit model loading / quantization (only if you need it)
+# ONNX Runtime (CPU or GPU builds available)
+onnxruntime>=1.15.0
+# If you need the GPU-enabled ONNX runtime, install the appropriate package for your platform
+# (e.g. onnxruntime-gpu). See https://onnxruntime.ai/ for details.
+
+# Optional / advanced (only if you need quantization or low-RAM loading)
 # bitsandbytes>=0.39.0
 # peft>=0.4.0
 
-# Optional: GPU-specific versions of PyTorch can be installed instead of the above torch/torchvision lines
-# If you run into installation issues, follow the official PyTorch installation guide.
-onnxruntime
+# If you run into installation issues, follow the official project install guides for PyTorch,
+# Transformers, and ONNX Runtime.

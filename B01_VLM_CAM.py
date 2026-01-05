@@ -1,10 +1,10 @@
-import cv2
 import time
 from PIL import Image
 from transformers import pipeline
 import torch
 import os
 import threading
+import cv2
 
 # ----------------------------
 # Device & performance config
@@ -107,17 +107,9 @@ while True:
             "role": "user",
             "content": [
                 {"type": "image", "image": image},
-                {
-                    "type": "text",
-                    "text": (
-                        "Describe the image briefly with useful information.\n"
-                        "Use one short sentence.\n"
-                        "No extra explanation.\n\n"
-                        f"{user_question}"
-                    )
-                }
+                {"type": "text", "text": "Please describe this image in a complete sentence."}
             ]
-        }
+        },
     ]
 
     start = time.time()
@@ -142,4 +134,4 @@ while True:
 # ----------------------------
 cap.release()
 cv2.destroyAllWindows()
-# ----------------------------
+# ----------------------------```
