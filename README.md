@@ -54,7 +54,8 @@ llama.cpp HTTP server (brief)
 - Start the server and set BASE_URL in the Python scripts (default: http://localhost:8080).
 - Example start command (server-side):
 1. Install [llama.cpp](https://github.com/ggml-org/llama.cpp)
-2. Run `llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF`  
+2. In cmd ` cd build/bin` and then 
+   Run `./llama-server -hf ggml-org/Qwen2-VL-2B-Instruct-GGUF`  
    Note: you may need to add `-ngl 99` to enable GPU (if you are using NVidia/AMD/Intel GPU)  
    Note (2): You can also try other models [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md)
 

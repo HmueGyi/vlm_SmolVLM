@@ -23,7 +23,7 @@ sentencepiece>=0.1.98
 tokenizers>=0.13.2
 
 # ONNX Runtime (CPU or GPU builds available)
-onnxruntime>=1.15.0
+# onnxruntime>=1.15.0
 # If you need the GPU-enabled ONNX runtime, install the appropriate package for your platform
 # (e.g. onnxruntime-gpu). See https://onnxruntime.ai/ for details.
 

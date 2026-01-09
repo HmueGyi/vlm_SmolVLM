@@ -59,7 +59,7 @@ SmolVLM ကို စမ်းသပ်ရန်နှင့် အသုံး�
 2. SmolVLM GGUF model သို့မဟုတ် သင်၏ model ဖြင့် server ကို run ပါ
 
    - [llama.cpp](https://github.com/ggml-org/llama.cpp)
-   - Run `llama-server -hf ggml-org/SmolVLM-500M-Instruct-GGUF`  
+   - Run `./llama-server -hf ggml-org/Qwen2-VL-2B-Instruct-GGUF`  
    Note: you may need to add `-ngl 99` to enable GPU (if you are using NVidia/AMD/Intel GPU)  
    Note (2): You can also try other models [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md)
 
