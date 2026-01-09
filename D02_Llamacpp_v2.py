@@ -8,7 +8,7 @@ import threading
 # Configuration
 # ----------------------------
 BASE_URL = "http://localhost:8080"
-INSTRUCTION = "What do you see?"
+INSTRUCTION = "which object do you see?"
 INTERVAL_MS = 500   # same as dropdown (100, 250, 500, 1000, 2000)
 
 RUNNING = False
@@ -22,6 +22,7 @@ def send_chat_completion(instruction, image_base64_url):
 
     payload = {
         "max_tokens": 100,
+        "temperature": 0.6,
         "messages": [
             {
                 "role": "user",
@@ -49,8 +50,12 @@ def send_chat_completion(instruction, image_base64_url):
 # ----------------------------
 # Worker thread (interval loop)
 # ----------------------------
+# ...existing code...
 def process_loop(cap):
     global RUNNING, LAST_RESPONSE
+
+    # target size to send (choose 1280x720 or 1920x1080 to reduce bandwidth)
+    TARGET_W, TARGET_H = 1280, 720
 
     while RUNNING:
         ret, frame = cap.read()
@@ -59,8 +64,14 @@ def process_loop(cap):
             time.sleep(1)
             continue
 
-        # Encode frame as JPEG
-        _, buffer = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+        # resize to target (2K -> smaller for faster encoding & network)
+        try:
+            frame_send = cv2.resize(frame, (TARGET_W, TARGET_H), interpolation=cv2.INTER_AREA)
+        except Exception:
+            frame_send = frame
+
+        # Encode frame as JPEG (quality 80 is a good default; lower => smaller)
+        _, buffer = cv2.imencode(".jpg", frame_send, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
         image_base64 = base64.b64encode(buffer).decode("utf-8")
         image_base64_url = f"data:image/jpeg;base64,{image_base64}"
 
@@ -77,7 +88,7 @@ def process_loop(cap):
 def main():
     global RUNNING
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     if not cap.isOpened():
         print("❌ Cannot open camera")
         return
