@@ -55,7 +55,7 @@ llama.cpp HTTP server (brief)
 - Example start command (server-side):
 1. Install [llama.cpp](https://github.com/ggml-org/llama.cpp)
 2. In cmd ` cd build/bin` and then 
-   Run `./llama-server -hf ggml-org/Qwen2-VL-2B-Instruct-GGUF`  
+   Run `./llama-server -hf ggml-org/Qwen3-VL-2B-Instruct-GGUF --host 0.0.0.0 --port 8080 -ngl 99`  
    Note: you may need to add `-ngl 99` to enable GPU (if you are using NVidia/AMD/Intel GPU)  
    Note (2): You can also try other models [here](https://github.com/ggml-org/llama.cpp/blob/master/docs/multimodal.md)
 

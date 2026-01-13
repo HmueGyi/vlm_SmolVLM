@@ -3,6 +3,7 @@ import base64
 import requests
 import threading
 
+import re
 import json
 import time
 import websocket
@@ -159,10 +160,10 @@ def question_loop():
         except Exception:
             a_lower = str(answer).lower()
 
-        if a_lower in ("yes", "y"):
+        if re.fullmatch(r"\byes\b", a_lower):
             # ask rosbridge to run 'stop' task
             send_service_call("stop")
-        elif a_lower in ("no", "n"):
+        elif re.fullmatch(r"\bno\b", a_lower):
             send_service_call("left")
 
 def on_open(ws,message):
@@ -250,4 +251,3 @@ if __name__ == "__main__":
             cv2.destroyAllWindows()
         except Exception:
             pass
-    
