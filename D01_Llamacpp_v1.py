@@ -38,6 +38,13 @@ else:
     print("⚠ OpenCV CUDA not available — running on CPU")
 
 # ----------------------------
+# System Prompt Template
+# ----------------------------
+SYSTEM_PROMPT = """You are an AI assistant for a robot. 
+                Analyze the camera image and answer questions briefly and clearly. 
+                Keep responses to 3 sentences maximum. Use simple, human-understandable language."""
+
+# ----------------------------
 # Send request to server
 # ----------------------------
 def send_chat_completion(instruction, image_base64_url):
@@ -46,6 +53,10 @@ def send_chat_completion(instruction, image_base64_url):
     payload = {
         "max_tokens": 100,
         "messages": [
+            {
+                "role": "system",
+                "content": SYSTEM_PROMPT
+            },
             {
                 "role": "user",
                 "content": [
@@ -160,10 +171,10 @@ def question_loop():
         except Exception:
             a_lower = str(answer).lower()
 
-        if re.fullmatch(r"\byes\b", a_lower):
+        if re.search(r"\byes\b", a_lower):
             # ask rosbridge to run 'stop' task
             send_service_call("stop")
-        elif re.fullmatch(r"\bno\b", a_lower):
+        elif re.search(r"\bno\b", a_lower):
             send_service_call("left")
 
 def on_open(ws,message):
