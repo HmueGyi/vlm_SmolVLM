@@ -33,3 +33,6 @@ tokenizers>=0.13.2
 
 # If you run into installation issues, follow the official project install guides for PyTorch,
 # Transformers, and ONNX Runtime.
+
+websocket-client
+# For the web demo, install the websocket client library.

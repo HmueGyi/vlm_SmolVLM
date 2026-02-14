@@ -14,7 +14,7 @@ WS_APP = None
 # ----------------------------
 # Configuration
 # ----------------------------
-BASE_URL = "http://localhost:8080"
+BASE_URL = "http://192.168.1.14:8080"
 LAST_FRAME = None
 LOCK = threading.Lock()
 
@@ -160,10 +160,10 @@ def question_loop():
         except Exception:
             a_lower = str(answer).lower()
 
-        if re.fullmatch(r"\byes\b", a_lower):
+        if re.search(r"\byes\b", a_lower):
             # ask rosbridge to run 'stop' task
             send_service_call("stop")
-        elif re.fullmatch(r"\bno\b", a_lower):
+        elif re.search(r"\bno\b", a_lower):
             send_service_call("left")
 
 def on_open(ws,message):
